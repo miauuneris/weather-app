@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天气预报</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 42px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .weather-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        
+        .weather-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .weather-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .city-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .weather-icon {
+            font-size: 80px;
+            margin: 20px 0;
+        }
+        
+        .temperature {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
+            text-transform: capitalize;
+        }
+        
+        .details {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .detail-item {
+            text-align: center;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        
+        .detail-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .search-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .search-box {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 30px;
+            width: 300px;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            outline: none;
+        }
+        
+        .search-btn {
+            padding: 15px 30px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 30px;
+            background: white;
+            color: #667eea;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        
+        .search-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+            
+            .search-box {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌤️ 天气预报</h1>
+        
+        <div class="search-container">
+            <input type="text" class="search-box" id="cityInput" placeholder="输入城市名称...">
+            <button class="search-btn" onclick="addCity()">搜索</button>
+        </div>
+        
+        <div class="weather-grid" id="weatherGrid"></div>
+    </div>
+    
+    <script>
+        const weatherData = [
+            {
+                city: '北京',
+                temp: 15,
+                icon: '☀️',
+                description: '晴朗',
+                humidity: 45,
+                wind: 12
+            },
+            {
+                city: '上海',
+                temp: 18,
+                icon: '⛅',
+                description: '多云',
+                humidity: 65,
+                wind: 8
+            },
+            {
+                city: '广州',
+                temp: 25,
+                icon: '🌧️',
+                description: '小雨',
+                humidity: 80,
+                wind: 15
+            },
+            {
+                city: '深圳',
+                temp: 26,
+                icon: '🌦️',
+                description: '阵雨',
+                humidity: 75,
+                wind: 10
+            },
+            {
+                city: '成都',
+                temp: 20,
+                icon: '☁️',
+                description: '阴天',
+                humidity: 70,
+                wind: 6
+            },
+            {
+                city: '杭州',
+                temp: 22,
+                icon: '🌤️',
+                description: '晴转多云',
+                humidity: 55,
+                wind: 9
+            }
+        ];
+        
+        function renderWeather() {
+            const grid = document.getElementById('weatherGrid');
+            grid.innerHTML = weatherData.map(data => `
+                <div class="weather-card">
+                    <div class="city-name">${data.city}</div>
+                    <div class="weather-icon">${data.icon}</div>
+                    <div class="temperature">${data.temp}°C</div>
+                    <div class="description">${data.description}</div>
+                    <div class="details">
+                        <div class="detail-item">
+                            <div class="detail-label">湿度</div>
+                            <div class="detail-value">${data.humidity}%</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">风速</div>
+                            <div class="detail-value">${data.wind}km/h</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function addCity() {
+            const input = document.getElementById('cityInput');
+            const cityName = input.value.trim();
+            
+            if (cityName === '') {
+                alert('请输入城市名称！');
+                return;
+            }
+            
+            const icons = ['☀️', '⛅', '☁️', '🌤️', '🌧️', '⛈️', '🌨️'];
+            const descriptions = ['晴朗', '多云', '阴天', '小雨', '大雨', '雷阵雨'];
+            
+            const newCity = {
+                city: cityName,
+                temp: Math.floor(Math.random() * 20) + 10,
+                icon: icons[Math.floor(Math.random() * icons.length)],
+                description: descriptions[Math.floor(Math.random() * descriptions.length)],
+                humidity: Math.floor(Math.random() * 40) + 40,
+                wind: Math.floor(Math.random() * 15) + 5
+            };
+            
+            weatherData.push(newCity);
+            renderWeather();
+            input.value = '';
+        }
+        
+        document.getElementById('cityInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addCity();
+        });
+        
+        renderWeather();
+    </script>
+</body>
+</html>
