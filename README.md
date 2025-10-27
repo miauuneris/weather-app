@@ -1,2 +1,2 @@
 # weather-app
-🌤️ Interactive weather dashboard displaying weather cards for multiple cities. Features include temperature, weather conditions, humidity, and wind speed. Users can search and add new cities dynamically. Built with pure HTML, CSS, and JavaScript.
+🌤️ 交互式天气仪表盘，显示多个城市的天气卡片。功能包括温度、天气状况、湿度和风速。用户可以动态搜索和添加新城市。使用纯 HTML、CSS 和 JavaScript 构建。
